@@ -24,7 +24,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 sh '''
-                docker login -u $DOCKERHUB_USER -p your_password
+                docker login -u $DOCKERHUB_USER -p Naveen/08
                 docker push $DOCKERHUB_USER/servicepro
                 '''
             }
