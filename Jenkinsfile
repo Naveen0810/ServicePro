@@ -8,10 +8,10 @@ pipeline {
     stages {
 
         stage('Clone Code') {
-            steps {
-                git 'https://github.com/Naveen0810/ServicePro'
-            }
-        }
+        steps {
+        git branch: 'main', url: 'https://github.com/Naveen0810/ServicePro'
+    }
+}
 
         stage('Build Docker Image') {
             steps {
