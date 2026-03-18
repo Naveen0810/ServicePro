@@ -31,12 +31,13 @@ pipeline {
         }
 
         stage('Deploy to Kubernetes') {
-    steps {
-        sh '''
-        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-        kubectl apply -f k8s/deployment.yaml
-        '''
-    }
-}
+            steps {
+                sh '''
+                export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+                kubectl apply -f k8s/deployment.yaml
+                kubectl rollout restart deployment servicepro
+                '''
+            }
+        }
     }
 }
