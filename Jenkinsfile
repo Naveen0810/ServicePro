@@ -16,7 +16,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-                docker build -t $DOCKERHUB_USER/servicepro .
+                docker build --no-cache -t $DOCKERHUB_USER/servicepro .
                 '''
             }
         }
