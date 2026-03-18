@@ -13,28 +13,19 @@ pipeline {
             }
         }
 
-        stage('Build Backend') {
+        stage('Build Docker Image') {
             steps {
-                dir('backend') {
-                    sh 'docker build -t $DOCKERHUB_USER/servicepro-backend .'
-                }
+                sh '''
+                docker build -t $DOCKERHUB_USER/servicepro .
+                '''
             }
         }
 
-        stage('Build Frontend') {
-            steps {
-                dir('frontend') {
-                    sh 'docker build -t $DOCKERHUB_USER/servicepro-frontend .'
-                }
-            }
-        }
-
-        stage('Push Images') {
+        stage('Push Docker Image') {
             steps {
                 sh '''
                 docker login -u $DOCKERHUB_USER -p your_password
-                docker push $DOCKERHUB_USER/servicepro-backend
-                docker push $DOCKERHUB_USER/servicepro-frontend
+                docker push $DOCKERHUB_USER/servicepro
                 '''
             }
         }
@@ -42,8 +33,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh '''
-                kubectl apply -f k8s/backend-deployment.yaml
-                kubectl apply -f k8s/frontend-deployment.yaml
+                kubectl apply -f k8s/deployment.yaml
                 '''
             }
         }
