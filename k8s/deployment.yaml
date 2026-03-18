@@ -15,6 +15,7 @@ spec:
       containers:
       - name: servicepro
         image: naveen0810/servicepro:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
 ---
