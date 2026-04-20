@@ -1745,7 +1745,6 @@ def record_metrics(response):
     latency = time.time() - request.start_time
     REQUEST_LATENCY.observe(latency)
     return response
-
 @app.route('/metrics')
 def metrics():
     return Response(generate_latest(), mimetype='text/plain')
