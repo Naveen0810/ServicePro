@@ -15,9 +15,9 @@ from prometheus_client import Counter
 
 app = Flask(__name__)
 app.config.from_object(Config)
-
+app.config['PROMETHEUS_METRICS_PATH'] = '/metrics'
 # Initialize Prometheus metrics
-metrics = PrometheusMetrics(app)
+metrics = PrometheusMetrics(app, path='/metrics')
 
 # Custom metrics
 booking_counter = Counter('booking_requests_total', 'Total booking requests')
