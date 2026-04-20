@@ -1694,11 +1694,10 @@ def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-        
-        # Create admin user if not exists
+
         admin = User.query.filter_by(role='admin').first()
         if not admin:
             admin = User(
@@ -1709,8 +1708,7 @@ if __name__ == '__main__':
             )
             db.session.add(admin)
             db.session.commit()
-        
-        # Create default services if not exists
+
         services = Service.query.all()
         if not services:
             default_services = [
@@ -1723,28 +1721,5 @@ if __name__ == '__main__':
             for service in default_services:
                 db.session.add(service)
             db.session.commit()
-    
-    if __name__ == "__main__":
-        socketio.run(app, debug=False, host='0.0.0.0', port=5000) 
 
-from prometheus_client import Counter, Histogram, generate_latest
-from flask import Response, request
-import time
-
-# Metrics
-REQUEST_COUNT = Counter('app_requests_total', 'Total Requests')
-REQUEST_LATENCY = Histogram('app_request_latency_seconds', 'Request latency')
-
-@app.before_request
-def start_timer():
-    request.start_time = time.time()
-
-@app.after_request
-def record_metrics(response):
-    REQUEST_COUNT.inc()
-    latency = time.time() - request.start_time
-    REQUEST_LATENCY.observe(latency)
-    return response
-@app.route('/metrics')
-def metrics():
-    return Response(generate_latest(), mimetype='text/plain')
+    socketio.run(app, host='0.0.0.0', port=5000)
