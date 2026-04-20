@@ -10,9 +10,17 @@ import uuid
 from werkzeug.utils import secure_filename
 from config import Config
 import pytz
+from prometheus_flask_exporter import PrometheusMetrics
+from prometheus_client import Counter
 
 app = Flask(__name__)
 app.config.from_object(Config)
+
+# Initialize Prometheus metrics
+metrics = PrometheusMetrics(app)
+
+# Custom metrics
+booking_counter = Counter('booking_requests_total', 'Total booking requests')
 
 # Ensure upload directories exist
 os.makedirs(os.path.join(app.root_path, 'uploads', 'verification_docs'), exist_ok=True)
@@ -894,6 +902,7 @@ def search_providers():
 @login_required
 @require_verified_provider
 def book_service(provider_id):
+    booking_counter.inc()  # Track booking request
     provider = ServiceProvider.query.get_or_404(provider_id)
     
     if request.method == 'POST':
