@@ -12,12 +12,18 @@ from config import Config
 import pytz
 from prometheus_flask_exporter import PrometheusMetrics
 from prometheus_client import Counter
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 
 app = Flask(__name__)
+
+@app.route('/metrics')
+def metrics_endpoint():
+    return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
+
 app.config.from_object(Config)
-app.config['PROMETHEUS_METRICS_PATH'] = '/metrics'
+
 # Initialize Prometheus metrics
-metrics = PrometheusMetrics(app, path='/metrics')
+metrics = PrometheusMetrics(app, path=None)
 
 # Custom metrics
 booking_counter = Counter('booking_requests_total', 'Total booking requests')
