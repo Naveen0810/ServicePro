@@ -1726,3 +1726,26 @@ if __name__ == '__main__':
     
     if __name__ == "__main__":
         socketio.run(app, debug=False, host='0.0.0.0', port=5000) 
+
+from prometheus_client import Counter, Histogram, generate_latest
+from flask import Response, request
+import time
+
+# Metrics
+REQUEST_COUNT = Counter('app_requests_total', 'Total Requests')
+REQUEST_LATENCY = Histogram('app_request_latency_seconds', 'Request latency')
+
+@app.before_request
+def start_timer():
+    request.start_time = time.time()
+
+@app.after_request
+def record_metrics(response):
+    REQUEST_COUNT.inc()
+    latency = time.time() - request.start_time
+    REQUEST_LATENCY.observe(latency)
+    return response
+
+@app.route('/metrics')
+def metrics():
+    return Response(generate_latest(), mimetype='text/plain')
